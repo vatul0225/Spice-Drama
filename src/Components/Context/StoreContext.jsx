@@ -6,7 +6,7 @@ export const StoreContext = createContext(null);
 const StoreContextProvider = (props) => {
   const [cartItems, setCartItems] = useState({});
 
-  const url = import.meta.env.VITE_USER_URL; // for render deployment
+  const url = import.meta.env.VITE_USER_API; // for render deployment
 
   const [token, setToken] = useState("");
 
