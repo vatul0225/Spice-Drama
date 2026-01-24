@@ -124,4 +124,4 @@ export const menu_list = [
   },
 ];
 
-export const url = import.meta.env.VITE_API_URL;
+export const url = import.meta.env.VITE_USER_API;
