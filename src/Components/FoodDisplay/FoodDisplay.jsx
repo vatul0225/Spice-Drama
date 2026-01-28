@@ -2,12 +2,8 @@ import React, { useContext } from "react";
 import { StoreContext } from "../Context/StoreContext";
 import FoodItem from "../FoodItem/FoodItem";
 
-const FoodDisplay = ({ category }) => {
+const FoodDisplay = ({ category = "Pizza" }) => {
   const { food_list = [] } = useContext(StoreContext);
-
-  // default logic ONLY when category is not passed
-  const activeCategory =
-    category === undefined || category === null ? "Pizza" : category;
 
   return (
     <div className="bg-gradient-to-b from-orange-50 to-white" id="food-display">
@@ -22,8 +18,7 @@ const FoodDisplay = ({ category }) => {
           </p>
         ) : (
           food_list.map((item) => {
-            // ALL = show all
-            if (activeCategory === "All") {
+            if (category === "All" || category === item.category) {
               return (
                 <FoodItem
                   key={item._id}
@@ -35,21 +30,6 @@ const FoodDisplay = ({ category }) => {
                 />
               );
             }
-
-            // specific category (Pizza default included)
-            if (item.category === activeCategory) {
-              return (
-                <FoodItem
-                  key={item._id}
-                  id={item._id}
-                  name={item.name}
-                  description={item.description}
-                  price={item.price}
-                  image={item.image}
-                />
-              );
-            }
-
             return null;
           })
         )}
