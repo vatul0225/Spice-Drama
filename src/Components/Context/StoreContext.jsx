@@ -6,7 +6,40 @@ export const StoreContext = createContext(null);
 const StoreContextProvider = (props) => {
   const [cartItems, setCartItems] = useState({});
 
-  const url = import.meta.env.VITE_USER_API; // for render deployment
+  // Base API URL (works for Render / Vercel etc)
+  const rawUrl = import.meta.env.VITE_USER_API || "";
+  const url = (() => {
+    let base = String(rawUrl).trim().replace(/\/+$/, "");
+    // Avoid mixed-content when frontend is on https but env is accidentally set to http
+    if (typeof window !== "undefined" && window.location?.protocol === "https:") {
+      base = base.replace(/^http:\/\//i, "https://");
+    }
+    return base;
+  })();
+
+  // Build a safe image URL from whatever is stored in DB (filename, /images/x, /uploads/x, full URL)
+  const getImageUrl = (image) => {
+    if (!image) return "";
+    const val = String(image).trim();
+    if (!val) return "";
+
+    // Already absolute URL
+    if (/^https?:\/\//i.test(val)) {
+      if (typeof window !== "undefined" && window.location?.protocol === "https:") {
+        return val.replace(/^http:\/\//i, "https://");
+      }
+      return val;
+    }
+
+    // Path stored with a leading slash
+    if (val.startsWith("/images/") || val.startsWith("/uploads/")) return `${url}${val}`;
+
+    // Some old data might have "images/xxx" or "uploads/xxx" without leading slash
+    if (val.startsWith("images/") || val.startsWith("uploads/")) return `${url}/${val}`;
+
+    // Default: treat as filename served from /images
+    return `${url}/images/${val}`;
+  };
 
   const [token, setToken] = useState("");
 
@@ -84,6 +117,7 @@ const StoreContextProvider = (props) => {
     removeCart,
     getTotalCartAmount,
     url,
+    getImageUrl,
     token,
     setToken,
   };

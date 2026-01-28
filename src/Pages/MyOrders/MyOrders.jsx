@@ -5,7 +5,7 @@ import axios from "axios";
 const MyOrders = () => {
   const [data, setData] = useState([]);
   const [openBillId, setOpenBillId] = useState(null);
-  const { url, token } = useContext(StoreContext);
+  const { url, token, getImageUrl } = useContext(StoreContext);
 
   const fetchOrders = async () => {
     const response = await axios.post(
@@ -73,7 +73,7 @@ const MyOrders = () => {
                         className="flex items-center gap-4 border-b pb-4 last:border-b-0"
                       >
                         <img
-                          src={url + "/images/" + item.image}
+                          src={getImageUrl(item.image)}
                           alt={item.name}
                           className="w-16 h-16 rounded-lg object-cover bg-gray-100"
                         />
