@@ -1,5 +1,7 @@
 import express from "express";
 import multer from "multer";
+import path from "path";
+import { fileURLToPath } from "url";
 import {
   addFood,
   listFood,
@@ -10,9 +12,13 @@ import {
 
 const foodRouter = express.Router();
 
-// Image store engine
+// Get directory name for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Image store engine - use absolute path for Vercel compatibility
 const storage = multer.diskStorage({
-  destination: "uploads",
+  destination: path.join(__dirname, "../uploads"),
   filename: (req, file, cb) => {
     cb(null, `${Date.now()}-${file.originalname}`);
   },

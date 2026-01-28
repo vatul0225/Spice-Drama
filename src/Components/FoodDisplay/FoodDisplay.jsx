@@ -21,7 +21,7 @@ const FoodDisplay = ({ category }) => {
                 name={item.name}
                 description={item.description}
                 price={item.price}
-                image={`${VITE_USER_API}/uploads/${item.image}`}
+                image={item.image}
               />
             );
           }

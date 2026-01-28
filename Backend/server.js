@@ -7,6 +7,18 @@ import "dotenv/config";
 import cartRouter from "./routes/cartRoute.js";
 import orderRouter from "./routes/orderRoute.js";
 import path from "path";
+import { fileURLToPath } from "url";
+import fs from "fs";
+
+// Get directory name for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Ensure uploads directory exists
+const uploadsDir = path.join(__dirname, "uploads");
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
 
 // app config
 const app = express();
@@ -22,7 +34,8 @@ connectDB();
 
 // api endpoint
 app.use("/api/food", foodRouter);
-app.use("/images", express.static("uploads"));
+// Serve static images - use absolute path for Vercel compatibility
+app.use("/images", express.static(path.join(__dirname, "uploads")));
 app.use("/api/user", userRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/order", orderRouter);
@@ -39,8 +52,3 @@ app.get("/", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-
-app.use(
-  "/uploads",
-  express.static(path.join(process.cwd(), "Backend/uploads")),
-);
