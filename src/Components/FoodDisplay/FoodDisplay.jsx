@@ -4,8 +4,6 @@ import FoodItem from "../FoodItem/FoodItem";
 
 const FoodDisplay = ({ category }) => {
   const { food_list } = useContext(StoreContext);
-  const VITE_USER_API = import.meta.env.VITE_USER_API;
-
   return (
     <div className="bg-gradient-to-b from-orange-50 to-white" id="food-display">
       <h1 className="text-3xl mt-20 pt-10 mb-15 mx-20 justify-center flex">

@@ -1,11 +1,5 @@
 import foodModel from "../models/foodModel.js";
 import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
-
-// Get directory name for ES modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 // ADD FOOD (already working)
 const addFood = async (req, res) => {
@@ -44,9 +38,8 @@ const removeFood = async (req, res) => {
   try {
     const food = await foodModel.findById(req.body.id);
 
-    // remove image - use absolute path for Vercel compatibility
-    const imagePath = path.join(__dirname, "../uploads", food.image);
-    fs.unlink(imagePath, () => {});
+    // remove image
+    fs.unlink(`uploads/${food.image}`, () => {});
 
     await foodModel.findByIdAndDelete(req.body.id);
     res.json({ success: true, message: "Food removed successfully" });
@@ -76,10 +69,9 @@ const updateFood = async (req, res) => {
       return res.json({ success: false, message: "Food not found" });
     }
 
-    // If new image uploaded → delete old image - use absolute path for Vercel compatibility
+    // If new image uploaded → delete old image
     if (req.file) {
-      const oldImagePath = path.join(__dirname, "../uploads", food.image);
-      fs.unlink(oldImagePath, () => {});
+      fs.unlink(`uploads/${food.image}`, () => {});
       food.image = req.file.filename;
     }
 
