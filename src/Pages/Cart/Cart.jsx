@@ -17,7 +17,7 @@ const Cart = () => {
     AddToCart,
     removeCart,
     getTotalCartAmount,
-    getImageUrl,
+    url,
   } = useContext(StoreContext);
 
   const navigate = useNavigate();
@@ -74,7 +74,7 @@ const Cart = () => {
                           {/* Product Info - Mobile: Full Width, Desktop: 6 cols */}
                           <div className="md:col-span-6 flex items-center gap-4">
                             <img
-                              src={getImageUrl(item.image)}
+                              src={url + "/images/" + item.image}
                               alt={item.name}
                               className="w-20 h-20 sm:w-24 sm:h-24 rounded-lg object-cover flex-shrink-0"
                             />
