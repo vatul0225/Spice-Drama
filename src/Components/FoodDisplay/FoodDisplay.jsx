@@ -3,7 +3,7 @@ import { StoreContext } from "../Context/StoreContext";
 import FoodItem from "../FoodItem/FoodItem";
 
 const FoodDisplay = ({ category }) => {
-  // ✅ Default empty array to prevent undefined errors
+
   const { food_list = [] } = useContext(StoreContext);
 
   return (
@@ -14,7 +14,6 @@ const FoodDisplay = ({ category }) => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mt-5 justify-items-center ml-30 mr-30">
         {food_list.length === 0 ? (
-          // ✅ Optional loading / empty state
           <p className="col-span-full text-gray-500 text-lg">
             No food items available
           </p>
@@ -23,7 +22,7 @@ const FoodDisplay = ({ category }) => {
             if (category === "All" || category === item.category) {
               return (
                 <FoodItem
-                  key={item._id} // ✅ stable key
+                  key={item._id} 
                   id={item._id}
                   name={item.name}
                   description={item.description}

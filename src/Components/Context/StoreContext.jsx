@@ -5,8 +5,8 @@ export const StoreContext = createContext(null);
 
 const StoreContextProvider = (props) => {
   /* ---------------- STATES ---------------- */
-  const [cartItems, setCartItems] = useState({}); // ✅ always object
-  const [food_list, setFoodList] = useState([]); // ✅ always array
+  const [cartItems, setCartItems] = useState({});
+  const [food_list, setFoodList] = useState([]);
   const [token, setToken] = useState("");
 
   /* ---------------- BASE URL ---------------- */
@@ -84,7 +84,7 @@ const StoreContextProvider = (props) => {
     }
   };
 
-  /* ---------------- TOTAL AMOUNT (🔥 FIXED) ---------------- */
+  /* ---------------- TOTAL AMOUNT ---------------- */
   const getTotalCartAmount = () => {
     let totalAmount = 0;
 
@@ -93,7 +93,7 @@ const StoreContextProvider = (props) => {
       if (quantity > 0) {
         const itemInfo = food_list.find((product) => product?._id === itemId);
 
-        // ✅ CRITICAL SAFETY CHECK
+        // CRITICAL SAFETY CHECK
         if (!itemInfo) continue;
 
         totalAmount += itemInfo.price * quantity;
