@@ -7,34 +7,38 @@ import "dotenv/config";
 import cartRouter from "./routes/cartRoute.js";
 import orderRouter from "./routes/orderRoute.js";
 
-// app config
 const app = express();
-// const port = 4000;
-const PORT = process.env.PORT || 4000; // port for live host on render
+const PORT = process.env.PORT || 4000;
 
-// middleware
+// ✅ CORS FIX - Allow Vercel frontend
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:5174",
+      "https://your-vercel-app.vercel.app", // 👈 Apna Vercel URL daalo
+    ],
+    credentials: true,
+  }),
+);
+
 app.use(express.json());
-app.use(cors());
 
-// Db Connection
 connectDB();
 
-// api endpoint
+// API endpoints
 app.use("/api/food", foodRouter);
-app.use("/images", express.static("uploads"));
 app.use("/api/user", userRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/order", orderRouter);
+
+// ✅ STATIC FILES - Serve uploads folder
+app.use("/images", express.static("uploads"));
 
 app.get("/", (req, res) => {
   res.send("API Working");
 });
 
-// app.listen(port, () => {
-//   console.log(`Server started on http://localhost:${port}`);
-// });
-
-// for render live host
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
