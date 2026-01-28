@@ -18,7 +18,7 @@ const FoodDisplay = ({ category = "Pizza" }) => {
           </p>
         ) : (
           food_list.map((item) => {
-            if (category === "Pizza" || category === item.category) {
+            if (category === "All" || category === item.category) {
               return (
                 <FoodItem
                   key={item._id}

@@ -7,7 +7,7 @@ import Footer from "../../Components/Footer/Footer";
 import Contact from "../../Components/Contact/Contact";
 
 const Home = () => {
-  const [Category, SetCategory] = useState("All");
+  const [Category, SetCategory] = useState("Pizza");
 
   return (
     <>
