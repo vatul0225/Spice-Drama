@@ -1,18 +1,52 @@
 import foodModel from "../models/foodModel.js";
 import { v2 as cloudinary } from "cloudinary";
 
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+// Helper function to upload to Cloudinary
+const uploadToCloudinary = (fileBuffer) => {
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        folder: "spice_drama_foods",
+        resource_type: "image",
+      },
+      (error, result) => {
+        if (error) reject(error);
+        else resolve(result);
+      },
+    );
+    uploadStream.end(fileBuffer);
+  });
+};
+
+// Helper function to delete from Cloudinary
+const deleteFromCloudinary = async (imageUrl) => {
+  if (imageUrl && imageUrl.includes("cloudinary")) {
+    const urlParts = imageUrl.split("/");
+    const fileName = urlParts[urlParts.length - 1];
+    const publicId = `spice_drama_foods/${fileName.split(".")[0]}`;
+    await cloudinary.uploader.destroy(publicId);
+  }
+};
+
 // ADD FOOD
 const addFood = async (req, res) => {
   try {
-    // req.file.path contains full Cloudinary URL
-    let image_url = req.file.path;
+    // Upload image buffer to Cloudinary
+    const result = await uploadToCloudinary(req.file.buffer);
 
     const food = new foodModel({
       name: req.body.name,
       description: req.body.description,
       price: req.body.price,
       category: req.body.category,
-      image: image_url, // Store full Cloudinary URL
+      image: result.secure_url, // Cloudinary URL
     });
 
     await food.save();
@@ -39,15 +73,8 @@ const removeFood = async (req, res) => {
   try {
     const food = await foodModel.findById(req.body.id);
 
-    // Delete image from Cloudinary
-    if (food.image && food.image.includes("cloudinary")) {
-      // Extract public_id from URL
-      const urlParts = food.image.split("/");
-      const fileName = urlParts[urlParts.length - 1];
-      const publicId = `spice_drama_foods/${fileName.split(".")[0]}`;
-
-      await cloudinary.uploader.destroy(publicId);
-    }
+    // Delete from Cloudinary
+    await deleteFromCloudinary(food.image);
 
     await foodModel.findByIdAndDelete(req.body.id);
     res.json({ success: true, message: "Food removed successfully" });
@@ -77,19 +104,17 @@ const updateFood = async (req, res) => {
       return res.json({ success: false, message: "Food not found" });
     }
 
-    // If new image uploaded, delete old from Cloudinary
+    // If new image uploaded
     if (req.file) {
-      if (food.image && food.image.includes("cloudinary")) {
-        const urlParts = food.image.split("/");
-        const fileName = urlParts[urlParts.length - 1];
-        const publicId = `spice_drama_foods/${fileName.split(".")[0]}`;
+      // Delete old image
+      await deleteFromCloudinary(food.image);
 
-        await cloudinary.uploader.destroy(publicId);
-      }
-      food.image = req.file.path; // New Cloudinary URL
+      // Upload new image
+      const result = await uploadToCloudinary(req.file.buffer);
+      food.image = result.secure_url;
     }
 
-    // Update other fields
+    // Update fields
     food.name = req.body.name;
     food.description = req.body.description;
     food.category = req.body.category;
