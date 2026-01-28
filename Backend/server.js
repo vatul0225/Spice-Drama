@@ -7,38 +7,34 @@ import "dotenv/config";
 import cartRouter from "./routes/cartRoute.js";
 import orderRouter from "./routes/orderRoute.js";
 
+// app config
 const app = express();
-const PORT = process.env.PORT || 4000;
+// const port = 4000;
+const PORT = process.env.PORT || 4000; // port for live host on render
 
-// CORS Configuration
-app.use(
-  cors({
-    origin: [
-      "http://localhost:5173",
-      "http://localhost:5174",
-      process.env.FRONTEND_URL, // Add in Render env variables
-    ],
-    credentials: true,
-  }),
-);
-
+// middleware
 app.use(express.json());
+app.use(cors());
 
-// Database Connection
+// Db Connection
 connectDB();
 
-// API Routes
+// api endpoint
 app.use("/api/food", foodRouter);
+app.use("/images", express.static("uploads"));
 app.use("/api/user", userRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/order", orderRouter);
 
-// No need for static file serving anymore - Cloudinary handles it!
-
 app.get("/", (req, res) => {
-  res.send("API Working ✅ - Cloudinary Enabled");
+  res.send("API Working");
 });
 
+// app.listen(port, () => {
+//   console.log(`Server started on http://localhost:${port}`);
+// });
+
+// for render live host
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
