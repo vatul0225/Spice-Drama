@@ -6,6 +6,7 @@ import userRouter from "./routes/userRoute.js";
 import "dotenv/config";
 import cartRouter from "./routes/cartRoute.js";
 import orderRouter from "./routes/orderRoute.js";
+import path from "path";
 
 // app config
 const app = express();
@@ -38,3 +39,8 @@ app.get("/", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+app.use(
+  "/uploads",
+  express.static(path.join(process.cwd(), "Backend/uploads")),
+);
