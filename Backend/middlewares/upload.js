@@ -1,12 +1,14 @@
 import multer from "multer";
-import { CloudinaryStorage } from "multer-storage-cloudinary";
+import pkg from "multer-storage-cloudinary"; // ✅ FIX
 import cloudinary from "../config/cloudinary.js";
+
+const { CloudinaryStorage } = pkg;
 
 const storage = new CloudinaryStorage({
   cloudinary,
   params: {
     folder: "food-items",
-    allowed_formats: ["jpg", "png", "jpeg", "webp"],
+    allowed_formats: ["jpg", "jpeg", "png", "webp"],
   },
 });
 
