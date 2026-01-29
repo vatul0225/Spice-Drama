@@ -1,36 +1,44 @@
 import express from "express";
 import cors from "cors";
+import "dotenv/config";
+
 import { connectDB } from "./config/db.js";
+
 import foodRouter from "./routes/foodRoutes.js";
 import userRouter from "./routes/userRoute.js";
-import "dotenv/config";
 import cartRouter from "./routes/cartRoute.js";
 import orderRouter from "./routes/orderRoute.js";
 
-// app config
+/* ================= APP CONFIG ================= */
 const app = express();
-// const port = 4000;
-const PORT = process.env.PORT || 4000; // port for live host on render
+const PORT = process.env.PORT || 4000;
 
-// middleware
+/* ================= MIDDLEWARE ================= */
 app.use(express.json());
-app.use(cors());
 
-// Db Connection
+// ✅ CORS (safe default)
+app.use(
+  cors({
+    origin: "*",
+    credentials: true,
+  }),
+);
+
+/* ================= DATABASE ================= */
 connectDB();
 
-// api endpoint
+/* ================= ROUTES ================= */
 app.use("/api/food", foodRouter);
-app.use("/images", express.static("uploads"));
 app.use("/api/user", userRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/order", orderRouter);
 
+/* ================= ROOT ================= */
 app.get("/", (req, res) => {
   res.send("API Working");
 });
 
-// for render live host
+/* ================= START SERVER ================= */
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });

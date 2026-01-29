@@ -1,7 +1,4 @@
 import express from "express";
-import multer from "multer";
-import path from "path";
-import { fileURLToPath } from "url";
 import {
   addFood,
   listFood,
@@ -10,31 +7,26 @@ import {
   updateFood,
 } from "../controllers/foodController.js";
 
+// ✅ Cloudinary upload middleware
+import upload from "../middlewares/upload.js";
+
 const foodRouter = express.Router();
 
-// Get directory name for ES modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+/* ================= FOOD ROUTES ================= */
 
-// Image store engine - use absolute path for Vercel compatibility
-const storage = multer.diskStorage({
-  destination: path.join(__dirname, "../uploads"),
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`);
-  },
-});
-
-const upload = multer({ storage });
-
-// Routes
+// ADD FOOD
 foodRouter.post("/add", upload.single("image"), addFood);
+
+// LIST FOOD
 foodRouter.get("/list", listFood);
+
+// REMOVE FOOD
 foodRouter.post("/remove", removeFood);
 
-// GET SINGLE FOOD (FOR EDIT)
+// GET SINGLE FOOD (EDIT)
 foodRouter.get("/single/:id", getSingleFood);
 
-// UPDATE FOOD (EDIT MODE)
+// UPDATE FOOD
 foodRouter.put("/update/:id", upload.single("image"), updateFood);
 
 export default foodRouter;
