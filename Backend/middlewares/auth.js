@@ -1,24 +1,27 @@
 import jwt from "jsonwebtoken";
-import adminModel from "../models/adminModel.js";
 
-export const isAuthenticated = async (req, res, next) => {
+/* ================= AUTH CHECK ================= */
+export const isAuthenticated = (req, res, next) => {
   try {
-    const auth = req.headers.authorization;
-    if (!auth) return res.status(401).json({ message: "No token" });
+    const authHeader = req.headers.authorization;
 
-    const token = auth.split(" ")[1];
+    if (!authHeader)
+      return res.status(401).json({ message: "No token provided" });
+
+    const token = authHeader.split(" ")[1];
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    req.user = decoded;
+    req.user = decoded; // { id, role }
     next();
-  } catch {
+  } catch (err) {
     return res.status(401).json({ message: "Invalid token" });
   }
 };
 
+/* ================= ROLE CHECK ================= */
 export const hasRole = (...roles) => {
   return (req, res, next) => {
-    if (!roles.includes(req.user.role)) {
+    if (!req.user || !roles.includes(req.user.role)) {
       return res.status(403).json({ message: "Access denied" });
     }
     next();
