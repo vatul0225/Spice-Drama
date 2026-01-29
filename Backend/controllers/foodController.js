@@ -1,110 +1,93 @@
 import foodModel from "../models/foodModel.js";
-import cloudinary from "../config/cloudinary.js";
-import streamifier from "streamifier";
+import fs from "fs";
 
-/* ================= CLOUDINARY UPLOAD HELPER ================= */
-const uploadToCloudinary = (fileBuffer) =>
-  new Promise((resolve, reject) => {
-    const stream = cloudinary.uploader.upload_stream(
-      { folder: "spice-drama" },
-      (error, result) => {
-        if (result?.secure_url) resolve(result.secure_url);
-        else reject(error);
-      }
-    );
-
-    streamifier.createReadStream(fileBuffer).pipe(stream);
-  });
-
-/* ================= ADD FOOD ================= */
+// ADD FOOD (already working)
 const addFood = async (req, res) => {
   try {
-    const { name, description, price, category } = req.body;
+    let image_filename = req.file.filename;
 
-    if (!name || !price || !category) {
-      return res.json({ success: false, message: "Missing fields" });
-    }
-
-    if (!req.file) {
-      return res.json({ success: false, message: "Image required" });
-    }
-
-    const imageUrl = await uploadToCloudinary(req.file.buffer);
-
-    const food = await foodModel.create({
-      name,
-      description,
-      price,
-      category,
-      image: imageUrl,
+    const food = new foodModel({
+      name: req.body.name,
+      description: req.body.description,
+      price: req.body.price,
+      category: req.body.category,
+      image: image_filename,
     });
 
-    res.json({ success: true, data: food });
-  } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    await food.save();
+    res.json({ success: true, message: "Food added successfully" });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: "Error adding food" });
   }
 };
 
-/* ================= LIST FOOD ================= */
+// LIST FOOD
 const listFood = async (req, res) => {
   try {
     const foods = await foodModel.find({});
     res.json({ success: true, data: foods });
-  } catch {
-    res.json({ success: false });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: "Error fetching foods" });
   }
 };
 
-/* ================= GET SINGLE FOOD ================= */
+// REMOVE FOOD
+const removeFood = async (req, res) => {
+  try {
+    const food = await foodModel.findById(req.body.id);
+
+    // remove image
+    fs.unlink(`uploads/${food.image}`, () => {});
+
+    await foodModel.findByIdAndDelete(req.body.id);
+    res.json({ success: true, message: "Food removed successfully" });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: "Error removing food" });
+  }
+};
+
+// GET SINGLE FOOD (FOR EDIT)
 const getSingleFood = async (req, res) => {
   try {
     const food = await foodModel.findById(req.params.id);
-    if (!food) {
-      return res.json({ success: false, message: "Food not found" });
-    }
     res.json({ success: true, data: food });
-  } catch {
-    res.json({ success: false });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: "Error fetching food" });
   }
 };
 
-/* ================= REMOVE FOOD ================= */
-const removeFood = async (req, res) => {
-  try {
-    await foodModel.findByIdAndDelete(req.body.id);
-    res.json({ success: true });
-  } catch {
-    res.json({ success: false });
-  }
-};
-
-/* ================= UPDATE FOOD ================= */
+// UPDATE FOOD (EDIT MODE)
 const updateFood = async (req, res) => {
   try {
     const food = await foodModel.findById(req.params.id);
-    if (!food) return res.json({ success: false });
 
-    if (req.file) {
-      food.image = await uploadToCloudinary(req.file.buffer);
+    if (!food) {
+      return res.json({ success: false, message: "Food not found" });
     }
 
-    food.name = req.body.name ?? food.name;
-    food.description = req.body.description ?? food.description;
-    food.category = req.body.category ?? food.category;
-    food.price = req.body.price ?? food.price;
+    // If new image uploaded → delete old image
+    if (req.file) {
+      fs.unlink(`uploads/${food.image}`, () => {});
+      food.image = req.file.filename;
+    }
+
+    // Update fields
+    food.name = req.body.name;
+    food.description = req.body.description;
+    food.category = req.body.category;
+    food.price = req.body.price;
 
     await food.save();
-    res.json({ success: true });
-  } catch {
-    res.json({ success: false });
+
+    res.json({ success: true, message: "Food updated successfully" });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: "Error updating food" });
   }
 };
 
-/* ================= EXPORTS (🔥 THIS WAS MISSING) ================= */
-export {
-  addFood,
-  listFood,
-  getSingleFood,
-  removeFood,
-  updateFood,
-};
+export { addFood, listFood, removeFood, getSingleFood, updateFood };

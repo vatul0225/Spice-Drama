@@ -1,6 +1,7 @@
 import express from "express";
 import multer from "multer";
-import { isAuthenticated, hasRole } from "../middlewares/auth.js";
+import path from "path";
+import { fileURLToPath } from "url";
 import {
   addFood,
   listFood,
@@ -11,36 +12,29 @@ import {
 
 const foodRouter = express.Router();
 
-/* ✅ MEMORY STORAGE (Cloudinary ke liye) */
-const upload = multer({ storage: multer.memoryStorage() });
+// Get directory name for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-/* ---------- ROUTES ---------- */
+// Image store engine - use absolute path for Vercel compatibility
+const storage = multer.diskStorage({
+  destination: path.join(__dirname, "../uploads"),
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}-${file.originalname}`);
+  },
+});
 
-foodRouter.post(
-  "/add",
-  isAuthenticated,
-  hasRole("admin", "super_admin"),
-  upload.single("image"),
-  addFood
-);
+const upload = multer({ storage });
 
-foodRouter.put(
-  "/update/:id",
-  isAuthenticated,
-  hasRole("admin", "super_admin"),
-  upload.single("image"),
-  updateFood
-);
+// Routes
+foodRouter.post("/add", upload.single("image"), addFood);
+foodRouter.get("/list", listFood);
+foodRouter.post("/remove", removeFood);
 
-foodRouter.get("/list", isAuthenticated, listFood);
-foodRouter.get("/single/:id", isAuthenticated, getSingleFood);
+// GET SINGLE FOOD (FOR EDIT)
+foodRouter.get("/single/:id", getSingleFood);
 
-foodRouter.post(
-  "/remove",
-  isAuthenticated,
-  hasRole("admin", "super_admin"),
-  removeFood
-);
+// UPDATE FOOD (EDIT MODE)
+foodRouter.put("/update/:id", upload.single("image"), updateFood);
 
-/* ✅ THIS IS CRITICAL */
 export default foodRouter;

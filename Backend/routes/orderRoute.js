@@ -1,24 +1,21 @@
 import express from "express";
+import authMiddleware from "../middlewares/auth.js";
 import {
+  // getOrderNotificationCount,
   listOrders,
   placeOrder,
   updateStatus,
   userOrders,
+  // verifyOrder,
 } from "../controllers/orderController.js";
-import { isAuthenticated } from "../middlewares/auth.js";
 
 const orderRouter = express.Router();
 
-// ✅ PLACE ORDER (USER ONLY)
-orderRouter.post("/place", isAuthenticated, placeOrder);
-
-// ✅ USER ORDERS (USER ONLY)
-orderRouter.post("/userorders", isAuthenticated, userOrders);
-
-// ✅ ADMIN ORDERS (NO AUTH)
+orderRouter.post("/place", authMiddleware, placeOrder);
+// orderRouter.post("/verify", verifyOrder);
+orderRouter.post("/userorders", authMiddleware, userOrders);
 orderRouter.get("/list", listOrders);
-
-// ✅ UPDATE STATUS (ADMIN)
 orderRouter.post("/status", updateStatus);
+// orderRouter.get("/notification-count", getOrderNotificationCount);
 
 export default orderRouter;
