@@ -1,6 +1,5 @@
 import express from "express";
 import multer from "multer";
-import { isAuthenticated, hasRole } from "../middlewares/auth.js";
 import {
   addFood,
   listFood,
@@ -11,45 +10,34 @@ import {
 
 const foodRouter = express.Router();
 
-/* ================= MULTER (MEMORY STORAGE) ================= */
-// ❌ diskStorage hata diya
-// ❌ uploads folder hata diya
+/* MULTER (MEMORY STORAGE) */
 const upload = multer({
   storage: multer.memoryStorage(),
 });
 
-/* ================= ROUTES ================= */
+/* ROUTES */
 
-// ADD FOOD
+// ✅ ADD FOOD (ADMIN)
 foodRouter.post(
   "/add",
-  isAuthenticated,
-  hasRole("super_admin", "admin"),
   upload.single("image"),
-  addFood,
+  addFood
 );
 
-// LIST FOOD
-foodRouter.get("/list", isAuthenticated, listFood);
+// ✅ LIST FOOD (ADMIN PANEL)
+foodRouter.get("/list", listFood);
 
-// REMOVE FOOD
-foodRouter.post(
-  "/remove",
-  isAuthenticated,
-  hasRole("super_admin", "admin"),
-  removeFood,
-);
+// ✅ REMOVE FOOD
+foodRouter.post("/remove", removeFood);
 
-// GET SINGLE FOOD
-foodRouter.get("/single/:id", isAuthenticated, getSingleFood);
+// ✅ GET SINGLE FOOD
+foodRouter.get("/single/:id", getSingleFood);
 
-// UPDATE FOOD
+// ✅ UPDATE FOOD
 foodRouter.put(
   "/update/:id",
-  isAuthenticated,
-  hasRole("super_admin", "admin"),
   upload.single("image"),
-  updateFood,
+  updateFood
 );
 
 export default foodRouter;
