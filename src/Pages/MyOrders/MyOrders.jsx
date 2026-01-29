@@ -73,7 +73,7 @@ const MyOrders = () => {
                         className="flex items-center gap-4 border-b pb-4 last:border-b-0"
                       >
                         <img
-                          src={getImageUrl(item.image)}
+                          src={item.image}
                           alt={item.name}
                           className="w-16 h-16 rounded-lg object-cover bg-gray-100"
                         />

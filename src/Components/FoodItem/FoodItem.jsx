@@ -15,11 +15,7 @@ const FoodItem = ({ id, name, description, price, image }) => {
         >
           {/* Image + Add/Counter */}
           <div className="relative">
-            <img
-              src={getImageUrl(image)}
-              alt={name}
-              className="w-full h-40 object-cover"
-            />
+            <img src={image} alt={name} className="w-full h-40 object-cover" />
 
             {/* Add / Counter Buttons */}
             {!cartItems[id] ? (
