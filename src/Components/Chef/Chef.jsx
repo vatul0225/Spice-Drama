@@ -47,7 +47,7 @@ export default function ChefSection() {
               </span>
             </div>
 
-            <h2 className="text-4xl font-bold text-gray-900 leading-tight animate-slide-up">
+            <h2 className="text-3xl font-bold text-gray-900 leading-tight animate-slide-up">
               Masters of <span className="text-orange-500">Culinary</span>{" "}
               Excellence
             </h2>

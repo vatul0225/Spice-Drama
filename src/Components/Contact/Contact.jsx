@@ -30,7 +30,7 @@ function Contact() {
               Let's Connect
             </span>
           </div>
-          <h1 className="text-5xl md:text-4xl font-bold text-gray-900 mb-4">
+          <h1 className="text-5xl md:text-3xl font-bold text-gray-900 mb-4">
             Get in <span className="text-orange-500">Touch</span>
           </h1>
           <p className="mt-4 max-w-2xl mx-auto text-gray-600 text-lg">
