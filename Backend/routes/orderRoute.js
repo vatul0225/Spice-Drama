@@ -1,21 +1,24 @@
 import express from "express";
-import authMiddleware from "../middlewares/auth.js";
+import { isAuthenticated } from "../middlewares/auth.js";
 import {
-  // getOrderNotificationCount,
   listOrders,
   placeOrder,
   updateStatus,
   userOrders,
-  // verifyOrder,
 } from "../controllers/orderController.js";
 
 const orderRouter = express.Router();
 
-orderRouter.post("/place", authMiddleware, placeOrder);
-// orderRouter.post("/verify", verifyOrder);
-orderRouter.post("/userorders", authMiddleware, userOrders);
-orderRouter.get("/list", listOrders);
-orderRouter.post("/status", updateStatus);
-// orderRouter.get("/notification-count", getOrderNotificationCount);
+// PLACE ORDER
+orderRouter.post("/place", isAuthenticated, placeOrder);
+
+// USER ORDERS
+orderRouter.post("/userorders", isAuthenticated, userOrders);
+
+// ADMIN ORDERS
+orderRouter.get("/list", isAuthenticated, listOrders);
+
+// UPDATE STATUS
+orderRouter.post("/status", isAuthenticated, updateStatus);
 
 export default orderRouter;

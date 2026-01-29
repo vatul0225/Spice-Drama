@@ -1,7 +1,6 @@
 import jwt from "jsonwebtoken";
 import userModel from "../models/userModel.js";
 
-/* ================= AUTH CHECK ================= */
 export const isAuthenticated = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
@@ -34,7 +33,6 @@ export const isAuthenticated = async (req, res, next) => {
   }
 };
 
-/* ================= ROLE CHECK ================= */
 export const hasRole = (...roles) => {
   return (req, res, next) => {
     if (!req.user || !roles.includes(req.user.role)) {
