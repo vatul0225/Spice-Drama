@@ -1,8 +1,9 @@
 import multer from "multer";
-import pkg from "multer-storage-cloudinary"; // ✅ FIX
 import cloudinary from "../config/cloudinary.js";
+import pkg from "multer-storage-cloudinary";
 
-const { CloudinaryStorage } = pkg;
+// ✅ Node 22 + ESM compatible access
+const { CloudinaryStorage } = pkg.default;
 
 const storage = new CloudinaryStorage({
   cloudinary,
