@@ -30,7 +30,7 @@ function Contact() {
               Let's Connect
             </span>
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          <h1 className="text-3xl md:text-4xl text-gray-900 mb-4">
             Get in <span className="text-orange-500">Touch</span>
           </h1>
           <p className="mt-4 max-w-2xl mx-auto text-gray-600 text-lg">
@@ -105,14 +105,14 @@ function Contact() {
                 <div className="flex flex-wrap gap-4">
                   <button
                     onClick={openWhatsApp}
-                    className="bg-white text-orange-600 px-6 py-3 rounded-full font-semibold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 flex items-center gap-2"
+                    className="bg-white text-orange-600 md:px-4 md:py-2 px-6 py-3 rounded-full font-semibold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 flex items-center gap-2"
                   >
                     <Phone className="w-4 h-4" />
                     Chat Now
                   </button>
                   <a
                     href="mailto:support@spicedrama.com"
-                    className="bg-white/20 backdrop-blur text-white border-2 border-white px-6 py-3 rounded-full font-semibold hover:bg-white/30 transition-all duration-300 transform hover:scale-105 flex items-center gap-2"
+                    className="bg-white/20 backdrop-blur text-white border-2 md:px-4 md:py-2 border-white px-6 py-3 rounded-full font-semibold hover:bg-white/30 transition-all duration-300 transform hover:scale-105 flex items-center gap-2"
                   >
                     <MessageCircle className="w-4 h-4" />
                     Send Email
