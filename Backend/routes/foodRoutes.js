@@ -1,6 +1,6 @@
 import express from "express";
 import multer from "multer";
-import { isAuthenticated, hasRole } from "../middleware/auth.js";
+import { isAuthenticated, hasRole } from "../middlewares/auth.js";
 import {
   addFood,
   listFood,
