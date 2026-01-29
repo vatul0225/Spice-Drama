@@ -149,19 +149,19 @@ function Contact() {
           {/* Bottom Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12">
             <div className="text-center p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300">
-              <p className="text-4xl font-bold text-orange-500 mb-2">1000+</p>
+              <p className="text-3xl font-bold text-orange-500 mb-2">1000+</p>
               <p className="text-gray-600 font-medium">Happy Customers</p>
             </div>
             <div className="text-center p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300">
-              <p className="text-4xl font-bold text-orange-500 mb-2">500+</p>
+              <p className="text-3xl font-bold text-orange-500 mb-2">500+</p>
               <p className="text-gray-600 font-medium">Daily Orders</p>
             </div>
             <div className="text-center p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300">
-              <p className="text-4xl font-bold text-orange-500 mb-2">4.8★</p>
+              <p className="text-3xl font-bold text-orange-500 mb-2">4.8★</p>
               <p className="text-gray-600 font-medium">Average Rating</p>
             </div>
             <div className="text-center p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300">
-              <p className="text-4xl font-bold text-orange-500 mb-2">
+              <p className="text-3xl font-bold text-orange-500 mb-2">
                 30 - 40 min
               </p>
               <p className="text-gray-600 font-medium">Delivery Time</p>
