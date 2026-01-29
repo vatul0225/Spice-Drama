@@ -2,111 +2,51 @@ import foodModel from "../models/foodModel.js";
 import cloudinary from "../config/cloudinary.js";
 import streamifier from "streamifier";
 
-/* ================= CLOUDINARY UPLOAD HELPER ================= */
-const uploadToCloudinary = (buffer) => {
-  return new Promise((resolve, reject) => {
-    const stream = cloudinary.v2.uploader.upload_stream(
-      { folder: "food-items" },
+/* upload helper */
+const uploadToCloudinary = (fileBuffer) =>
+  new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      { folder: "spice-drama" },
       (error, result) => {
-        if (result) resolve(result);
+        if (result) resolve(result.secure_url);
         else reject(error);
-      },
+      }
     );
-
-    streamifier.createReadStream(buffer).pipe(stream);
+    streamifier.createReadStream(fileBuffer).pipe(stream);
   });
-};
 
-/* ================= ADD FOOD ================= */
-const addFood = async (req, res) => {
+/* ADD FOOD */
+export const addFood = async (req, res) => {
   try {
     const { name, description, price, category } = req.body;
 
-    if (!name || !price || !category) {
-      return res.status(400).json({
-        success: false,
-        message: "Name, price and category are required",
-      });
-    }
+    if (!req.file)
+      return res.status(400).json({ success: false, message: "Image required" });
 
-    if (!req.file) {
-      return res.status(400).json({
-        success: false,
-        message: "Image is required",
-      });
-    }
-
-    // 🔥 upload image to cloudinary
-    const uploadedImage = await uploadToCloudinary(req.file.buffer);
+    const imageUrl = await uploadToCloudinary(req.file.buffer);
 
     const food = await foodModel.create({
       name,
       description,
       price,
       category,
-      image: uploadedImage.secure_url, // ✅ FULL URL
+      image: imageUrl, // ✅ FULL URL
     });
 
-    res.json({
-      success: true,
-      message: "Food added successfully",
-      data: food,
-    });
-  } catch (error) {
-    console.error("ADD FOOD ERROR 👉", error);
-    res.status(500).json({
-      success: false,
-      message: "Server error while adding food",
-    });
-  }
-};
-
-/* ================= LIST FOOD ================= */
-const listFood = async (req, res) => {
-  try {
-    const foods = await foodModel.find({});
-    res.json({ success: true, data: foods });
-  } catch (error) {
-    console.log(error);
-    res.json({ success: false, message: "Error fetching foods" });
-  }
-};
-
-/* ================= REMOVE FOOD ================= */
-const removeFood = async (req, res) => {
-  try {
-    await foodModel.findByIdAndDelete(req.body.id);
-    res.json({ success: true, message: "Food removed successfully" });
-  } catch (error) {
-    console.log(error);
-    res.json({ success: false, message: "Error removing food" });
-  }
-};
-
-/* ================= GET SINGLE FOOD ================= */
-const getSingleFood = async (req, res) => {
-  try {
-    const food = await foodModel.findById(req.params.id);
     res.json({ success: true, data: food });
-  } catch (error) {
-    console.log(error);
-    res.json({ success: false, message: "Error fetching food" });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
   }
 };
 
-/* ================= UPDATE FOOD ================= */
-const updateFood = async (req, res) => {
+/* UPDATE FOOD */
+export const updateFood = async (req, res) => {
   try {
     const food = await foodModel.findById(req.params.id);
+    if (!food) return res.json({ success: false });
 
-    if (!food) {
-      return res.json({ success: false, message: "Food not found" });
-    }
-
-    // upload new image if provided
     if (req.file) {
-      const uploadedImage = await uploadToCloudinary(req.file.buffer);
-      food.image = uploadedImage.secure_url;
+      food.image = await uploadToCloudinary(req.file.buffer);
     }
 
     food.name = req.body.name;
@@ -115,12 +55,8 @@ const updateFood = async (req, res) => {
     food.price = req.body.price;
 
     await food.save();
-
-    res.json({ success: true, message: "Food updated successfully" });
-  } catch (error) {
-    console.log(error);
-    res.json({ success: false, message: "Error updating food" });
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false });
   }
 };
-
-export { addFood, listFood, removeFood, getSingleFood, updateFood };
