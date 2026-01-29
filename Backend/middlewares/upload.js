@@ -1,18 +1,24 @@
 import multer from "multer";
 import cloudinary from "../config/cloudinary.js";
-import pkg from "multer-storage-cloudinary";
 
-// ✅ Node 22 + ESM compatible access
-const { CloudinaryStorage } = pkg.default;
-
-const storage = new CloudinaryStorage({
-  cloudinary,
-  params: {
-    folder: "food-items",
-    allowed_formats: ["jpg", "jpeg", "png", "webp"],
-  },
-});
+/* ================= MULTER MEMORY STORAGE ================= */
+const storage = multer.memoryStorage();
 
 const upload = multer({ storage });
+
+/* ================= CLOUDINARY UPLOAD HELPER ================= */
+export const uploadToCloudinary = (buffer, folder = "food-items") => {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      { folder },
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      },
+    );
+
+    stream.end(buffer);
+  });
+};
 
 export default upload;

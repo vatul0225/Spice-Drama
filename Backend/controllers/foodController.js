@@ -1,5 +1,6 @@
 import foodModel from "../models/foodModel.js";
 import cloudinary from "../config/cloudinary.js";
+import { uploadToCloudinary } from "../middlewares/upload.js";
 
 /* ================= ADD FOOD ================= */
 const addFood = async (req, res) => {
@@ -8,6 +9,9 @@ const addFood = async (req, res) => {
       return res.json({ success: false, message: "Image is required" });
     }
 
+    // ✅ upload image buffer to cloudinary
+    const result = await uploadToCloudinary(req.file.buffer);
+
     const food = new foodModel({
       name: req.body.name,
       description: req.body.description,
@@ -15,8 +19,8 @@ const addFood = async (req, res) => {
       category: req.body.category,
 
       // ✅ Cloudinary data
-      image: req.file.path, // secure_url
-      imageId: req.file.filename, // public_id
+      image: result.secure_url,
+      imageId: result.public_id,
     });
 
     await food.save();
@@ -85,14 +89,16 @@ const updateFood = async (req, res) => {
       return res.json({ success: false, message: "Food not found" });
     }
 
-    // ✅ If new image uploaded
+    // ✅ if new image uploaded
     if (req.file) {
       // delete old image
       await cloudinary.uploader.destroy(food.imageId);
 
-      // save new image
-      food.image = req.file.path;
-      food.imageId = req.file.filename;
+      // upload new image
+      const result = await uploadToCloudinary(req.file.buffer);
+
+      food.image = result.secure_url;
+      food.imageId = result.public_id;
     }
 
     // update fields
