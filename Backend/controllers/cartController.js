@@ -3,7 +3,7 @@ import userModel from "../models/userModel.js";
 /* ================= ADD TO CART ================= */
 const addToCart = async (req, res) => {
   try {
-    // ✅ authMiddleware se aa raha hai
+    // authMiddleware se aa raha hai
     const userId = req.userId;
     const { itemId } = req.body;
 
@@ -23,12 +23,12 @@ const addToCart = async (req, res) => {
       });
     }
 
-    // ✅ initialize cart if empty
+    // initialize cart if empty
     if (!user.cartData) {
       user.cartData = {};
     }
 
-    // ✅ add or increment item
+    // add or increment item
     user.cartData[itemId] = (user.cartData[itemId] || 0) + 1;
 
     await user.save();
@@ -66,10 +66,10 @@ const removeFromCart = async (req, res) => {
       });
     }
 
-    // ✅ decrease quantity
+    // decrease quantity
     user.cartData[itemId] -= 1;
 
-    // ✅ remove key if quantity is 0
+    // remove key if quantity is 0
     if (user.cartData[itemId] <= 0) {
       delete user.cartData[itemId];
     }

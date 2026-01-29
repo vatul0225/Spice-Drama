@@ -21,14 +21,14 @@ const userSchema = new mongoose.Schema(
       required: true,
     },
 
-    // ✅ cart structure: { foodId: quantity }
+    // cart structure: { foodId: quantity }
     cartData: {
       type: Object,
       default: {},
     },
   },
   {
-    minimize: false, // ✅ empty cart {} preserve karega
+    minimize: false,
     timestamps: true,
   },
 );

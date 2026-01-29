@@ -7,7 +7,7 @@ import {
   updateFood,
 } from "../controllers/foodController.js";
 
-// ✅ Cloudinary upload middleware (memory storage)
+// Cloudinary upload middleware (memory storage)
 import upload from "../middlewares/upload.js";
 
 const foodRouter = express.Router();

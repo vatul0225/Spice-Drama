@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 
 const authMiddleware = async (req, res, next) => {
   try {
-    // ✅ Support both: token header & Authorization: Bearer token
+    // Support both: token header & Authorization: Bearer token
     const authHeader = req.headers.authorization || req.headers.token;
 
     if (!authHeader) {
@@ -12,7 +12,7 @@ const authMiddleware = async (req, res, next) => {
       });
     }
 
-    // ✅ Extract token
+    // Extract token
     const token = authHeader.startsWith("Bearer ")
       ? authHeader.split(" ")[1]
       : authHeader;
@@ -24,10 +24,10 @@ const authMiddleware = async (req, res, next) => {
       });
     }
 
-    // ✅ Verify token
+    // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // ✅ Attach userId safely
+    // Attach userId safely
     req.userId = decoded.id;
 
     next();

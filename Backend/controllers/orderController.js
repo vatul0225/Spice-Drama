@@ -4,7 +4,7 @@ import userModel from "../models/userModel.js";
 /* ================= PLACE ORDER (COD) ================= */
 const placeOrder = async (req, res) => {
   try {
-    const userId = req.userId; // ✅ FIXED
+    const userId = req.userId;
 
     if (!userId) {
       return res.json({ success: false, message: "User not authenticated" });
@@ -41,7 +41,7 @@ const placeOrder = async (req, res) => {
 /* ================= USER ORDERS ================= */
 const userOrders = async (req, res) => {
   try {
-    const userId = req.userId; // ✅ FIXED
+    const userId = req.userId;
 
     const orders = await orderModel.find({ userId }).sort({ createdAt: -1 });
 

@@ -24,20 +24,20 @@ const foodSchema = new mongoose.Schema(
       required: true,
     },
 
-    // ✅ Cloudinary image URL
+    // Cloudinary image URL
     image: {
       type: String,
       required: true,
     },
 
-    // ✅ Cloudinary public_id (important for delete/update)
+    // Cloudinary public_id (important for delete/update)
     imageId: {
       type: String,
       required: true,
     },
   },
   {
-    timestamps: true, // ✅ future use (sorting, analytics)
+    timestamps: true,
   },
 );
 

@@ -9,7 +9,7 @@ const addFood = async (req, res) => {
       return res.json({ success: false, message: "Image is required" });
     }
 
-    // ✅ upload image buffer to cloudinary
+    // upload image buffer to cloudinary
     const result = await uploadToCloudinary(req.file.buffer);
 
     const food = new foodModel({
@@ -18,7 +18,7 @@ const addFood = async (req, res) => {
       price: req.body.price,
       category: req.body.category,
 
-      // ✅ Cloudinary data
+      // Cloudinary data
       image: result.secure_url,
       imageId: result.public_id,
     });
@@ -52,7 +52,7 @@ const removeFood = async (req, res) => {
       return res.json({ success: false, message: "Food not found" });
     }
 
-    // ✅ delete image from cloudinary
+    // delete image from cloudinary
     await cloudinary.uploader.destroy(food.imageId);
 
     await foodModel.findByIdAndDelete(req.body.id);
@@ -89,7 +89,7 @@ const updateFood = async (req, res) => {
       return res.json({ success: false, message: "Food not found" });
     }
 
-    // ✅ if new image uploaded
+    // if new image uploaded
     if (req.file) {
       // delete old image
       await cloudinary.uploader.destroy(food.imageId);

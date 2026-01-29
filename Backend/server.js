@@ -16,7 +16,6 @@ const PORT = process.env.PORT || 4000;
 /* ================= MIDDLEWARE ================= */
 app.use(express.json());
 
-// ✅ CORS (safe default)
 app.use(
   cors({
     origin: "*",
@@ -40,5 +39,5 @@ app.get("/", (req, res) => {
 
 /* ================= START SERVER ================= */
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
